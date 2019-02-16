@@ -1,0 +1,5 @@
+source_content_dir = "E:\Projects\Coding\Python\rezeptbuch\Src\source"
+destination_content_dir = "E:\Projects\Coding\Python\rezeptbuch\Src\output"
+theme_dir = "theme"
+template_dir = "template"
+language = "de"

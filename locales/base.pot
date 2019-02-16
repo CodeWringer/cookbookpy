@@ -1,0 +1,45 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2019-02-16 02:06+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=cp1252\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+
+
+#: cookbookpy\classes\asset.py:11
+msgid "Title"
+msgstr ""
+
+#: cookbookpy\classes\asset_markdown.py:13
+msgid "Markdown"
+msgstr ""
+
+#: cookbookpy\classes\asset_recipe.py:18
+msgid "Servings"
+msgstr ""
+
+#: cookbookpy\classes\asset_recipe.py:19
+msgid "Ingredients"
+msgstr ""
+
+#: cookbookpy\classes\asset_recipe.py:20
+msgid "Utensils"
+msgstr ""
+
+#: cookbookpy\classes\asset_recipe.py:21
+msgid "Preparation"
+msgstr ""
+
+#: cookbookpy\classes\asset_recipe.py:22
+msgid "Cooking"
+msgstr ""
+
