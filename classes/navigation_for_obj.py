@@ -3,20 +3,20 @@ from classes.navigation import Navigation
 from classes.asset import Asset
 from operator import attrgetter
 
-class NavigationToObj(Navigation):
+class NavigationForObj(Navigation):
     """Determines the relative urls of a navigable object."""
     def __init__(self, obj):
         if (not isinstance(obj, Asset) and not isinstance(obj, Category)):
             raise TypeError("The given object must either be of type Asset or Category (or one of their inheriting classes)")
         super().__init__(obj)
-        self.parent = None # NavigationToObj object
+        self.parent = None # NavigationForObj object
         self.neighbors = []
         self.neighbors_prev = []
         self.neighbors_next = []
         self.get_neighbors()
         self.children = self.get_children()
-        print('[NavigationToObj] Acquired %s neighbors for %s' % (str(len(self.neighbors)), self.obj.name))
-        print('[NavigationToObj] Acquired %s children for %s' % (str(len(self.children)), self.obj.name))
+        print('[NavigationForObj] Acquired %s neighbors for %s' % (str(len(self.neighbors)), self.obj.name))
+        print('[NavigationForObj] Acquired %s children for %s' % (str(len(self.children)), self.obj.name))
 
     def get_neighbors(self):
         """Determines all neighboring Asset/Category objects."""
@@ -47,9 +47,13 @@ class NavigationToObj(Navigation):
         children = []
         if isinstance(self.obj, Category):
             for child in self.obj.children:
-                children.append(NavigationToObj(child))
+                newChild = NavigationForObj(child)
+                children.append(newChild)
+                newChild.parent = self
             for child in self.obj.assets:
-                children.append(NavigationToObj(child))
+                newChild = NavigationForObj(child)
+                children.append(newChild)
+                newChild.parent = self
         return children
 
     def get_url_to(self, obj):
@@ -65,21 +69,21 @@ class NavigationToObj(Navigation):
         # Test neighbors.
         for neighbor in self.neighbors:
             if neighbor == obj:
-                return '/../%s' % (neighbor.name)
+                return '../%s' % (neighbor.name)
         # Test children.
         for child in self.children:
-            if child == obj:
-                return '/%s' % (child.name)
+            if child.obj == obj:
+                return '/%s' % (child.obj.name)
             else:
-                childUrl = child.navigation.get_url_to(obj)
+                childUrl = child.get_url_to(obj)
                 if childUrl != None:
-                    return '/%s%s' % (child.name, childUrl)
+                    return '/%s%s' % (child.obj.name, childUrl)
         # Test parent.
-        if self.parent == obj:
-            return '/..'
+        if self.parent.obj == obj:
+            return '../'
         else:
-            parentUrl = self.parent.navigation.get_url_to(obj)
+            parentUrl = self.parent.get_url_to(obj)
             if parentUrl != None:
-                return '/..%s' % (parentUrl)
+                return '..%s' % (parentUrl)
         return None
 

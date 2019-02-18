@@ -12,8 +12,8 @@ if utility.io.get_file_exists(settingsPath):
 settings = {
     'source_content_dir' : None,
     'destination_content_dir' : None,
-    'theme_dir' : 'theme',
-    'template_dir' : 'template',
+    'theme_dir' : None,
+    'template_dir' : None,
     'language' : None
     }
 
@@ -41,6 +41,6 @@ _ = lang.gettext
 # Begin process.
 Generator(settings['source_content_dir'],
         settings['destination_content_dir'],
-        settings['theme_dir'],
-        settings['template_dir']
+        settings['template_dir'],
+        settings['language']
         )

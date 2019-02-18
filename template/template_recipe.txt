@@ -1,0 +1,22 @@
+!Title
+Template
+
+!Servings
+N/A
+
+!Ingredients
+| Ingredient | Amount | Notes
+|  |  |
+
+!Utensils
+| Utensil | Notes
+|  |  |
+
+!Preparation
+1. 
+
+!Cooking
+1. 
+
+!See Also
+category/asset

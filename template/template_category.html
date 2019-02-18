@@ -1,0 +1,10 @@
+{% extends "template_base.html" %}
+{% block content %}
+    <ul class="toc">
+        {% for category in categories %}
+        <li class="toc_category">
+            {{ category.rendered }}
+        </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

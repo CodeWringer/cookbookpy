@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="{{ language }}">
+<head>
+    {% block head %}
+    {% for style in styles %}
+    <link rel="stylesheet" type="text/css" href="{{ style.url }}">
+    {% endfor %}
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"> 
+    <title>{{ title }}</title>
+    {% endblock %}
+</head>
+<body>
+    {% block navigation %}
+    <div class="navigation">
+        {% block navigation_category %}
+        <div class="navigation_category">
+            <ul>
+                {% for category in categories %}
+                <li>
+                    <a href="{{ category.url }}">{{ category.name }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endblock %}
+        {% block navigation_neighbor %}
+        <div class="navigation_neighbor">
+            <a id="neighbor_previous" class="navigation_neighbor" href="{{ neighbor_previous.url }}">&lt;&lt; {{ neighbor_previous.title }}</a>
+            <a id="neighbor_next" class="navigation_neighbor" href="{{ neighbor_next.url }}">{{ neighbor_next.title }} &gt;&gt;</a>
+        </div>
+        {% endblock %}
+    </div>
+    {% endblock %}
+    <br>
+    <div class="content" id="content">
+        {% if category %}
+        <h2>{{ category.name }}</h2>
+        {% endif %}
+        <h1>{{ title }}</h1>
+        <hr>
+        {% if titleimage %}
+        <div class="titleimage">
+            <a href={{ titleimage.url }}></a>
+        </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>
