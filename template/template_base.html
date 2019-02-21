@@ -25,8 +25,12 @@
         {% endblock %}
         {% block navigation_neighbor %}
         <div class="navigation_neighbor">
+            {% if neighbor_previous %}
             <a id="neighbor_previous" class="navigation_neighbor" href="{{ neighbor_previous.url }}">&lt;&lt; {{ neighbor_previous.title }}</a>
+            {% endif %}
+            {% if neighbor_next %}
             <a id="neighbor_next" class="navigation_neighbor" href="{{ neighbor_next.url }}">{{ neighbor_next.title }} &gt;&gt;</a>
+            {% endif %}
         </div>
         {% endblock %}
     </div>
@@ -43,7 +47,22 @@
             <a href={{ titleimage.url }}></a>
         </div>
         {% endif %}
-        {% block content %}{% endblock %}
+        {% block content %}
+            {% if content_override %}
+                {{ content_override }}
+            {% endif %}
+        {% endblock %}
     </div>
+    {% if see_also %}
+    <div>
+        <ul>
+            {% for see_entry in see_also %}
+            <li>
+                <a href="{{ see_entry.url }}">{{ see_entry.name }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
 </body>
 </html>

@@ -1,13 +1,12 @@
 import jinja2
-from jinja2 import FileSystemLoader, select_autoescape
+from jinja2 import FileSystemLoader
 import os
-import sys
 import utility.io
-import lxml
-from lxml.html import builder as E
+from distutils.dir_util import copy_tree
 from classes.category import Category
-from classes.navigation_for_obj import NavigationForObj
-from classes.navigation_for_path import NavigationForPath
+from classes.navigation import Navigation
+from classes.asset import Asset
+from utility.url import get_url
 
 class Generator():
     """Core class that generates the cook book."""
@@ -42,7 +41,7 @@ class Generator():
         self.root_category = Category(self.source_content_dir)
 
         print('--------- [Generator] Getting navigation')
-        NavigationForObj(self.root_category)
+        Navigation(self.root_category)
 
         print('--------- [Generator] Rendering')
         self.render()
@@ -72,50 +71,41 @@ class Generator():
         """Returns a list of css style file paths."""
         styles = []
         styles_dir = os.path.join(self.source_content_dir, 'theme', 'css')
+
         style_files = utility.io.get_file_names(styles_dir)
         for style_file in style_files:
-            file_path = os.path.join('theme', 'css', style_file)
-            styles.append(file_path)
+            file_path = os.path.join(styles_dir, style_file)
+            style_asset = Asset(file_path)
+            styles.append(style_asset)
         return styles
 
-    def get_styles_for_render(self, obj):
-        styles = []
+    def get_style_urls(self, obj):
+        """Returns a list of styles urls for use in template rendering.
+        Parameters
+        ---------
+        obj : Asset or Category
+          The object for which to get the urls.
+        """
+        path = obj.path
+
+        if isinstance(obj, Category):
+            path += '/index.html'
+
+        style_urls = []
         for style in self.styles:
-            nav = NavigationForPath(obj, style, self.source_content_dir)
-            styles.append({ 'url':nav.get_url_to(style) })
-        return styles
-
-    def get_category_for_toc(self, category):
-        root_elm = E.UL(E.CLASS("toc_category"))
-        # Children categories.
-        nav = category.navigation
-        for child in category.children:
-            child_elm = E.LI(
-                E.A(child.name, href=nav.get_url_to(child)),
-                lxml.html.fragment_fromstring(self.get_category_for_toc(child))
-            )
-            root_elm.append(child_elm)
-
-        for asset in category.assets:
-            asset_elm = E.LI(
-                E.A(asset.title, href="")
-                # E.A(asset.title, href=nav.get_url_to(asset))
-            )
-            root_elm.append(asset_elm)
-
-        root_elm = lxml.html.tostring(root_elm)
-        root_elm = root_elm.decode(sys.getdefaultencoding())
-        return root_elm
+            url = get_url(path, style.path)
+            style_urls.append({ 'url': url })
+        return style_urls
 
     def render(self):
         """Renders the templates."""
-        categories_toc = self.get_category_for_toc(self.root_category)
-        styles = self.get_styles_for_render(self.root_category)
+        categories_toc = self.root_category.get_rendered_for_toc()
+        style_urls = self.get_style_urls(self.root_category)
         title = _('Table of Contents')
         titleimage = None   # TODO
-        rendered = self.templates['template_toc'].render(
+        rendered_toc = self.templates['template_toc'].render(
                                         language = self.language,
-                                        styles = styles,
+                                        styles = style_urls,
                                         title = title,
                                         titleimage = titleimage,
                                         categories_toc = categories_toc)
@@ -123,4 +113,13 @@ class Generator():
         rendered_path = os.path.join(self.destination_content_dir,
                                      'index.html')
         with open(rendered_path, mode='wb') as outfile:
-            outfile.write(rendered.encode('utf-8'))
+            outfile.write(rendered_toc.encode('utf-8'))
+
+        # Copy theme dir.
+        copy_tree(os.path.join(self.source_content_dir, 'theme'),
+                  os.path.join(self.destination_content_dir, 'theme'))
+
+        # Render categories, including their children and assets.
+        for category in self.root_category.children:
+            category.render(self, self.destination_content_dir)
+

@@ -1,30 +1,30 @@
 {% extends "template_base.html" %}
 {% block content %}
-    <div class="ingredients">
-        <h2>{{ ingredients }}</h2>
+    <div class="recipe">
+        <h2>{{ ingredients_header }}</h2>
         <p>{{ for_servings }}</p>
         {# {% block ingredients %}{% endblock %} #}
         {{ ingredients|safe }}
     </div>
     <hr>
-    <div id="utensils">
-        <h2>{{ utensils }}</h2>
+    <div class="recipe">
+        <h2>{{ utensils_header }}</h2>
         {# {% block utensils %}{% endblock %} #}
         {{ utensils|safe }}
     </div>
     <hr>
-    <div id="prepimages">
+    <div class="recipe">
         {# {% block prepimages %}{% endblock %} #}
         {{ prepimages|safe }}
     </div>
-    <div id="preparation">
-        <h2>{{ preparation }}</h2>
+    <div class="recipe">
+        <h2>{{ preparation_header }}</h2>
         {# {% block preparation %}{% endblock %} #}
         {{ preparation|safe }}
     </div>
     <hr>
-    <div id="cooking">
-        <h2>{{ cooking }}</h2>
+    <div class="recipe">
+        <h2>{{ cooking_header }}</h2>
         {# {% block cooking %}{% endblock %} #}
         {{ cooking|safe }}
     </div>
