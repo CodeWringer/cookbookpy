@@ -35,3 +35,13 @@ def get_file_text_lines(path, encoding):
 def get_file_exists(path):
     """Returns true, if a file exists at the given path."""
     return os.path.exists(path)
+
+def get_new_ext(path, ext):
+    """Returns the given file path, with the file extension changed to the given extension."""
+    if not ext.startswith('.'):
+        ext = '.' + ext
+    # os.path.splitext did not behave as expected here -> splitting extension off manually.
+    index = path.rfind('.')
+    asset_path = path[:index]
+    asset_path = asset_path + ext
+    return asset_path

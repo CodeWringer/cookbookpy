@@ -1,7 +1,9 @@
 import jinja2
 from jinja2 import FileSystemLoader
 import os
+import sys
 import utility.io
+import lxml
 from distutils.dir_util import copy_tree
 from classes.category import Category
 from classes.navigation import Navigation
@@ -100,6 +102,9 @@ class Generator():
     def render(self):
         """Renders the templates."""
         categories_toc = self.root_category.get_rendered_for_toc()
+        categories_toc = lxml.html.tostring(categories_toc, pretty_print=True)
+        categories_toc = categories_toc.decode(sys.getdefaultencoding())
+
         style_urls = self.get_style_urls(self.root_category)
         title = _('Table of Contents')
         titleimage = None   # TODO

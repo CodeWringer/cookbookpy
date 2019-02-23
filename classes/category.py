@@ -7,6 +7,7 @@ from classes.asset_markdown import AssetMarkdown
 from lxml.html import builder as E
 import lxml
 from utility.url import get_url
+from utility.io import get_new_ext
 
 class Category():
     """Represents a category."""
@@ -82,8 +83,15 @@ class Category():
             child.render(generator, dest_dir_path)
 
     def get_rendered(self, generator):
-        """Returns an html representation of this category."""
+        """Returns an html representation of this category.
+        Parameters
+        ---------
+        generator : Generator
+          The generator object this category belongs to.
+        """
         categories_toc = self.get_rendered_for_toc()
+        categories_toc = lxml.html.tostring(categories_toc, pretty_print=True)
+        categories_toc = categories_toc.decode(sys.getdefaultencoding())
         title = self.name
         titleimage = None # TODO
 
@@ -122,29 +130,36 @@ class Category():
         )
         return rendered
 
-    # TODO: refactor
-    def get_rendered_for_toc(self):
+    def get_rendered_for_toc(self, path_override=None):
+        """Returns an html 'ul' element, that represents the entire table of contents for this category.
+        Parameters
+        ---------
+        path_override : str
+          If not None, gets urls for this path. Intended for use by parent categories getting the toc of their children.
+        """
         root_elm = E.UL(E.CLASS("toc_category"))
         # Children categories.
         nav = self.navigation
         for child in self.children:
-            child_path = get_url(self.file_path, child.file_path)
+            if path_override != None:
+                child_path = get_url(path_override, child.file_path)
+            else:
+                child_path = get_url(self.file_path, child.file_path)
+
             child_elm = E.LI(
                 E.A(child.name, href=child_path),
-                lxml.html.fragment_fromstring(child.get_rendered_for_toc())
+                child.get_rendered_for_toc(path_override=self.path)
             )
             root_elm.append(child_elm)
         # Assets.
         for asset in self.assets:
-            asset_path = os.path.splitext(asset.path)[0].replace('\\', '/')
-            asset_path = os.path.join(asset_path[:asset_path.rfind('/')],
-                                      asset.dest_name)
-            asset_path = get_url(self.file_path, asset_path)
+            asset_path = get_new_ext(asset.path, 'html')
+            if path_override != None:
+                asset_path = get_url(path_override, asset_path)
+            else:
+                asset_path = get_url(self.file_path, asset_path)
             asset_elm = E.LI(
                 E.A(asset.title, href=asset_path)
             )
             root_elm.append(asset_elm)
-
-        root_elm = lxml.html.tostring(root_elm, pretty_print=True)
-        root_elm = root_elm.decode(sys.getdefaultencoding())
         return root_elm

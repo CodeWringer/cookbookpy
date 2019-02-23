@@ -1,7 +1,6 @@
 from classes.asset_content import AssetContent
 from utility.url import get_url
 import markdown
-import os
 
 class AssetMarkdown(AssetContent):
     """Represents a markdown document."""
