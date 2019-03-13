@@ -49,11 +49,11 @@ class Navigation():
         children = []
         if isinstance(self.obj, Category):
             for child in self.obj.children:
-                newChild = Navigation(child)
-                children.append(newChild)
-                newChild.parent = self
-            for child in self.obj.assets:
-                newChild = Navigation(child)
-                children.append(newChild)
-                newChild.parent = self
+                new_child = Navigation(child)
+                children.append(new_child)
+                new_child.parent = self
+            for asset in self.obj.assets:
+                new_asset = Navigation(asset)
+                children.append(new_asset)
+                new_asset.parent = self
         return children

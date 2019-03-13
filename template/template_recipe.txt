@@ -5,12 +5,12 @@ Template
 N/A
 
 !Ingredients
-| Ingredient | Amount | Notes
-|  |  |
+Ingredient | Amount | Notes
+---------- | ------ | -----
 
 !Utensils
-| Utensil | Notes
-|  |  |
+Utensil | Notes
+------- | ------------
 
 !Preparation
 1. 

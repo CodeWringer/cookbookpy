@@ -10,7 +10,7 @@ class AssetMarkdown(AssetContent):
 
     def get_markdown(self):
         """Analyzes the file found via the given absolute path."""
-        return super().get_section(_('Markdown'))
+        return super().get_section('Markdown')
 
     def render(self, generator, dest_dir):
         """Renders and writes out this asset."""

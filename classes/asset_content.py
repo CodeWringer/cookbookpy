@@ -7,7 +7,7 @@ class AssetContent(Asset):
     def __init__(self, path):
         super().__init__(path)
         self.parent = None     # A Category object.
-        self.title = self.get_section(_('Title'))[0]
+        self.title = self.get_section('Title')[0]
         self.dest_name = os.path.splitext(self.name)[0] + '.html'
         self.navigation = None # A Navigation object.
         self.see_also = self.get_see_also() # NavigationForPath objects.
@@ -15,7 +15,7 @@ class AssetContent(Asset):
 
     def get_see_also(self):
         """Returns a list of NavigationForPath objects for every entry in the see_also section."""
-        lines = self.get_section(_('See Also'))
+        lines = self.get_section('See Also')
         see_also = []
         for line in lines:
             pass
@@ -37,7 +37,8 @@ class AssetContent(Asset):
         indexSectionEnd = -1
         # Get start and end index of section
         for line in self.text_content:
-            if line.startswith('!' + section_name):
+            if (line.startswith('!' + section_name) or
+                line.startswith('!' + _(section_name))):
                 indexSectionStart = self.text_content.index(line) + 1
             elif line.startswith('!') and indexSectionStart >= 0:
                 indexSectionEnd = self.text_content.index(line)

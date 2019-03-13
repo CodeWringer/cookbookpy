@@ -15,11 +15,11 @@ class AssetRecipe(AssetContent):
 
     def get_recipe(self):
         """Analyzes the file found via the given absolute path."""
-        self.servings = super().get_section(_('Servings'))
-        self.ingredients = super().get_section(_('Ingredients'))
-        self.utensils = super().get_section(_('Utensils'))
-        self.preparation = super().get_section(_('Preparation'))
-        self.cooking = super().get_section(_('Cooking'))
+        self.servings = super().get_section('Servings')
+        self.ingredients = super().get_section('Ingredients')
+        self.utensils = super().get_section('Utensils')
+        self.preparation = super().get_section('Preparation')
+        self.cooking = super().get_section('Cooking')
 
     def render(self, generator, dest_dir):
         """Renders and writes out this asset."""
@@ -55,11 +55,11 @@ class AssetRecipe(AssetContent):
                                neighbor.path)
             }
 
-        ingredients = [_('Ingredient | Amount | Notes'), '-- | -- | --']
-        ingredients = '\n'.join(ingredients + self.ingredients)
+        # ingredients = [_('Ingredient | Amount | Notes'), '-- | -- | --']
+        ingredients = '\n'.join(self.ingredients)
 
-        utensils = [_('Utensil | Notes'), '-- | --']
-        utensils = '\n'.join(utensils + self.utensils)
+        # utensils = [_('Utensil | Notes'), '-- | --']
+        utensils = '\n'.join(self.utensils)
 
         preparation = '\n'.join(self.preparation)
         cooking = '\n'.join(self.cooking)
