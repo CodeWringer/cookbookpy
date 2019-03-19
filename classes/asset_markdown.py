@@ -1,5 +1,4 @@
 from classes.asset_content import AssetContent
-from utility.url import get_url
 import markdown
 
 class AssetMarkdown(AssetContent):
@@ -23,28 +22,9 @@ class AssetMarkdown(AssetContent):
         title = self.title
         titleimage = None # TODO
 
-        categories = []
-        for category in generator.root_category.children:
-            categories.append({ 'name': category.name,
-                                'url': get_url(self.path,
-                                               category.file_path) })
-
-        neighbor_previous = None
-        neighbor_next = None
-        if len(self.navigation.neighbors_prev) > 0:
-            neighbor = self.navigation.neighbors_prev[0]
-            neighbor_previous = {
-                'title': neighbor.title,
-                'url': get_url(self.path,
-                               neighbor.path)
-            }
-        if len(self.navigation.neighbors_next) > 0:
-            neighbor = self.navigation.neighbors_next[0]
-            neighbor_next = {
-                'title': neighbor.title,
-                'url': get_url(self.path,
-                               neighbor.path)
-            }
+        categories = self.get_categories(generator)
+        neighbor_previous = self.get_neighbor_prev()
+        neighbor_next = self.get_neighbor_next()
 
         content = markdown.markdown('\n'.join(self.markdown), ['extra'])
         # see_also = TODO

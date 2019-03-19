@@ -1,5 +1,4 @@
 from classes.asset_content import AssetContent
-from utility.url import get_url
 import markdown
 
 class AssetRecipe(AssetContent):
@@ -32,35 +31,12 @@ class AssetRecipe(AssetContent):
         title = self.title
         titleimage = None # TODO
 
-        categories = []
-        for category in generator.root_category.children:
-            categories.append({ 'name': category.name,
-                                'url': get_url(self.path,
-                                               category.file_path) })
+        categories = self.get_categories(generator)
+        neighbor_previous = self.get_neighbor_prev()
+        neighbor_next = self.get_neighbor_next()
 
-        neighbor_previous = None
-        neighbor_next = None
-        if len(self.navigation.neighbors_prev) > 0:
-            neighbor = self.navigation.neighbors_prev[0]
-            neighbor_previous = {
-                'title': neighbor.title,
-                'url': get_url(self.path,
-                               neighbor.path)
-            }
-        if len(self.navigation.neighbors_next) > 0:
-            neighbor = self.navigation.neighbors_next[0]
-            neighbor_next = {
-                'title': neighbor.title,
-                'url': get_url(self.path,
-                               neighbor.path)
-            }
-
-        # ingredients = [_('Ingredient | Amount | Notes'), '-- | -- | --']
         ingredients = '\n'.join(self.ingredients)
-
-        # utensils = [_('Utensil | Notes'), '-- | --']
         utensils = '\n'.join(self.utensils)
-
         preparation = '\n'.join(self.preparation)
         cooking = '\n'.join(self.cooking)
 

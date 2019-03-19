@@ -4,6 +4,7 @@ from classes.generator import Generator
 import gettext
 import argparse
 import unittest
+import logging
 from unittests.test_utility_url import TestUtilityUrl
 
 parser = argparse.ArgumentParser()
@@ -20,6 +21,18 @@ else:
     if utility.io.get_file_exists(settings_path):
         lines_settings = utility.io.get_file_text_lines(settings_path, encoding='windows-1252')
 
+    # Setup logging.
+    log_name = 'log.txt'
+    log_file = os.path.join(package_dir, log_name)
+    if utility.io.get_file_exists(log_file):
+        os.remove(log_file)
+
+    logging.basicConfig(filename=log_file,
+                        filemode='a',
+                        format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                        datefmt='%H:%M:%S',
+                        level=logging.DEBUG)
+
     settings = {
         'source_content_dir' : None,
         'destination_content_dir' : None,
@@ -35,13 +48,13 @@ else:
         value = split[1].strip().strip('"')
         if setting in settings:
             settings[setting] = value
-            print('[__init__] Acquired setting "%s" with value "%s"' % (setting, value))
+            logging.info('[__init__] Acquired setting "%s" with value "%s"' % (setting, value))
         else:
-            print('[__init__] Ignoring unexpected setting "%s"' % (setting))
+            logging.info('[__init__] Ignoring unexpected setting "%s"' % (setting))
 
     # Get language.
     locale_path = os.path.join(package_dir, 'locales')
-    print('[__init__] locale path: %s' % (locale_path))
+    logging.info('[__init__] locale path: %s' % (locale_path))
     if settings['language'] != None:
         lang = gettext.translation ('base', locale_path, [settings['language']] )
     else:

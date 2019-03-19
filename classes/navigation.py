@@ -1,6 +1,7 @@
 from classes.category import Category
 from classes.asset import Asset
 from operator import attrgetter
+import logging
 
 class Navigation():
     """Determines the relative urls of a navigable object."""
@@ -20,7 +21,7 @@ class Navigation():
 
     def get_neighbors(self):
         """Determines all neighboring Asset/Category objects."""
-        neighbors = []
+        neighbors_all = []
         neighbors_prev = []
         neighbors_next = []
         reached_self = False
@@ -28,7 +29,16 @@ class Navigation():
         if hasattr(self.obj, 'parent'):
             parent_obj = self.obj.parent
             if isinstance(parent_obj, Category):
-                for neighbor in parent_obj.children:
+
+                neighbors = []
+                if isinstance(self.obj, Category):
+                    neighbors = parent_obj.children
+                    logging.debug('%s is Category' % (self.obj.name))
+                elif isinstance(self.obj, Asset):
+                    neighbors = parent_obj.assets
+                    logging.debug('%s is Asset' % (self.obj.name))
+
+                for neighbor in neighbors:
                     if neighbor == self.obj:
                         reached_self = True
                         continue
@@ -36,13 +46,19 @@ class Navigation():
                         neighbors_next.append(neighbor)
                     else:
                         neighbors_prev.append(neighbor)
-                    neighbors.append(neighbor)
+                    neighbors_all.append(neighbor)
+
         self.neighbors_prev = sorted(neighbors_prev,
                                      key=attrgetter('name'),
                                      reverse=True)
         self.neighbors_next = sorted(neighbors_next,
                                      key=attrgetter('name'))
-        self.neighbors = sorted(neighbors, key=attrgetter('name'))
+        self.neighbors = sorted(neighbors_all, key=attrgetter('name'))
+
+        if len(self.neighbors_prev) > 0:
+            logging.debug('%s: neighbor_prev: %s' % (self.obj.name, self.neighbors_prev[0].name))
+        if len(self.neighbors_next) > 0:
+            logging.debug('%s: neighbor_next: %s' % (self.obj.name, self.neighbors_next[0].name))
 
     def get_children(self):
         """Creates Navigation objects and returns them as a list."""

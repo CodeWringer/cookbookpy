@@ -1,6 +1,8 @@
 from classes.asset import Asset
 import os
 import utility.io
+from utility.io import get_new_ext
+from utility.url import get_url
 
 class AssetContent(Asset):
     """Base class for recipe/markdown assets."""
@@ -70,6 +72,46 @@ class AssetContent(Asset):
         utility.io.ensure_dir(dest_dir)
         with open(dest_file_path, mode='wb') as outfile:
             outfile.write(rendered.encode('utf-8'))
+
+    def get_neighbor_next(self):
+        """Returns the first next neighbor,
+        or None, if there isn't one."""
+        if len(self.navigation.neighbors_next) > 0:
+            neighbor = self.navigation.neighbors_next[0]
+            return {
+                'title': neighbor.title,
+                'url': get_url(self.path,
+                               get_new_ext(neighbor.path, 'html'))
+            }
+        else:
+            return None
+
+    def get_neighbor_prev(self):
+        """Returns the first previous neighbor,
+        or None, if there isn't one."""
+        if len(self.navigation.neighbors_prev) > 0:
+            neighbor = self.navigation.neighbors_prev[0]
+            return {
+                'title': neighbor.title,
+                'url': get_url(self.path,
+                               get_new_ext(neighbor.path, 'html'))
+            }
+        else:
+            return None
+
+    def get_categories(self, generator):
+        """Returns a list of root categories.
+        Parameters
+        ---------
+        generator : classes.Generator
+            Generator object whose root categories to get.
+        """
+        categories = []
+        for category in generator.root_category.children:
+            categories.append({ 'name': category.name,
+                                'url': get_url(self.path,
+                                               category.file_path) })
+        return categories
 
     def get_rendered(self, generator):
         pass

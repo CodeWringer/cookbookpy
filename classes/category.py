@@ -37,13 +37,13 @@ class Category():
             if re_markdown.match(extension) != None:
                 print('[Category] As markdown')
                 recipe = AssetMarkdown(filePath)
-                assets.append(recipe)
                 recipe.parent = self
+                assets.append(recipe)
             elif re_recipe.match(extension) != None:
                 print('[Category] As recipe')
                 recipe = AssetRecipe(filePath)
-                assets.append(recipe)
                 recipe.parent = self
+                assets.append(recipe)
         return assets
 
     def get_children(self):
